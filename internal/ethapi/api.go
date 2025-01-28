@@ -95,6 +95,10 @@ type feeHistoryResult struct {
 	BlobGasUsedRatio []float64        `json:"blobGasUsedRatio,omitempty"`
 }
 
+func (api *TransactionAPI) GetInternalTransactions(ctx context.Context, hash common.Hash) (string, error) {
+	return "HelloWorld", nil
+}
+
 // FeeHistory returns the fee market history.
 func (api *EthereumAPI) FeeHistory(ctx context.Context, blockCount math.HexOrDecimal64, lastBlock rpc.BlockNumber, rewardPercentiles []float64) (*feeHistoryResult, error) {
 	oldest, reward, baseFee, gasUsed, blobBaseFee, blobGasUsed, err := api.b.FeeHistory(ctx, uint64(blockCount), lastBlock, rewardPercentiles)
