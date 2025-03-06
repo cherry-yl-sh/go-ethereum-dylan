@@ -17,6 +17,9 @@
 package types
 
 import (
+	"encoding/json"
+	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -67,4 +70,39 @@ func TestParseDelegation(t *testing.T) {
 			t.Fatalf("failed to parse, want %s", tt.want.Hex())
 		}
 	}
+
+}
+
+// https://odyssey-explorer.ithaca.xyz/tx/0xe3a7660b86626560968e63bd9faa428dd6555cc6c09054c144295d2b6c7e2da9?tab=index
+func TestAuthority(t *testing.T) {
+	jsonData := `{
+        "address": "0xadeebe459e44222ed40fa615be9a929d2fa77893",
+        "chainId": "0xde9fb",
+        "nonce": "0x1",
+        "r": "0x380c4db8e1b82461e4b6b235c775649995f8b06e0b999fa69b5633f539f1352c",
+        "s": "0x50a11fa0d2f2e66bb8a95948db232ce24a22913973dcdb50e3b1cdc697e032d1",
+        "yParity": "0x1"
+    }`
+
+	// 创建SetCodeAuthorization实例
+	var auth SetCodeAuthorization
+
+	if err := json.Unmarshal([]byte(jsonData), &auth); err != nil {
+		panic(err)
+	}
+	fmt.Printf("SetCodeAuthorization:\n")
+	fmt.Printf("  Address: %s\n", auth.Address.Hex())
+	fmt.Printf("  ChainID: %s\n", auth.ChainID.String())
+	fmt.Printf("  Nonce: %d\n", auth.Nonce)
+	fmt.Printf("  V: %d\n", auth.V)
+	fmt.Printf("  R: %s\n", auth.R.Hex())
+	fmt.Printf("  S: %s\n", auth.S.Hex())
+	addr, err := auth.Authority()
+	if err != nil {
+		fmt.Printf("Authority error: %v\n", err)
+	}
+	fmt.Printf("Authority: %s\n", addr.Hex())
+	expectedAddr := common.HexToAddress("0x7c0ea167b05a85c6e6ce7e919983af3f3cea379e")
+	assert.Equal(t, expectedAddr, addr)
+
 }

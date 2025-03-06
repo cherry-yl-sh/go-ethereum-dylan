@@ -1212,6 +1212,7 @@ type TransactionAPI struct {
 	b         Backend
 	nonceLock *AddrLocker
 	signer    types.Signer
+	//traceApi  *tracers.API
 }
 
 // NewTransactionAPI creates a new RPC service with methods for interacting with transactions.
